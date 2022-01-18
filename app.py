@@ -2,12 +2,13 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flask_cors import CORS
-import os
 
 app = Flask(__name__)
 CORS(app)
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "app.sqlite")
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://legghaaryteyxf:37613d5242a83640752f3eae39573cf3575305babd1bb22d87719780776996d7@ec2-54-208-139-247.compute-1.amazonaws.com:5432/d3cddarv8stsml"
+
+# /////// API Hosted lilnk name \\\\\\\\\\\\\\\\
+# https://jukebox-wood-crafts.herokuapp.com/(add wanted endpoint)
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
