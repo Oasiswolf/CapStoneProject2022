@@ -90,8 +90,39 @@ def update_item(id):
 
     return jsonify(picture_schema.dump(item_to_update))
 
-    # /////////////////// How to Delete Items from the Database \\\\\\\\\\\\\\\
+# ///////////////////How to Add Multiple Items to he Database \\\\\\\\\\\\\\\\\\\
+app.route('/item/add/multi', methods=["POST"])
+def add_multi_items():
+    if request.content_type != "application/json":
+        return jsonify("ERROR: Data must be sent as JSON")
+    
+    post_data = request.get_json()
 
+    new_records = []
+
+    for picture in post_data:
+        item_title = picture.get('item_title')
+        category = picture.get('category')
+        item_img = picture.get('item_img')
+
+        existing_item_check = db.session.query(Picture).filter(Picture.item_title == item_title).first()
+        if existing_item_check is None:
+            new_record = Picture(item_title, category, item_img)
+            db.session.add(new_record)
+            db.session.commit()
+            new_records.append(new_record)
+
+        return jsonify(multi_picture_schema.dump(new_records))
+
+
+
+    # /////////////////// How to Delete Items from the Database \\\\\\\\\\\\\\\
+@app.route('/item/delete/<id>', methods=["DELETE"])
+def item_to_delete(id):
+    delete_item = db.session.query(Picture).filter(Picture.id == id).first()
+    db.session.delete(delete_item)
+    db.session.commit()
+    return jsonify("Item was Deleted Successfully")
 
 
 
