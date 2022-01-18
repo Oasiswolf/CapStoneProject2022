@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://legghaaryteyxf:37613d5242a83640752f3eae39573cf3575305babd1bb22d87719780776996d7@ec2-54-208-139-247.compute-1.amazonaws.com:5432/d3cddarv8stsml"
 
 # /////// API Hosted lilnk name \\\\\\\\\\\\\\\\
@@ -61,11 +62,11 @@ def get_all_items():
     return jsonify(multi_picture_schema.dump(all_records))
 
 # /////////////////// How to Get items by ID from the Database \\\\\\\\\\\\\\\
+
 @app.route('/item/get/<id>', methods=["GET"])
 def get_item_id(id):
     one_item = db.session.query(Picture).filter(Picture.id == id).first()
     return jsonify(picture_schema.dump(one_item))
-
 
 # /////////////////// How to Update Items to the Database \\\\\\\\\\\\\\\
 @app.route('/item/update/<id>', methods=["PUT"])
@@ -92,7 +93,8 @@ def update_item(id):
     return jsonify(picture_schema.dump(item_to_update))
 
 # ///////////////////How to Add Multiple Items to he Database \\\\\\\\\\\\\\\\\\\
-app.route('/item/add/multi', methods=["POST"])
+
+@app.route('/item/add/multi', methods=["POST"])
 def add_multi_items():
     if request.content_type != "application/json":
         return jsonify("ERROR: Data must be sent as JSON")
