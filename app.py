@@ -14,23 +14,23 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://legghaaryteyxf:37613d5242a
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-class Picture(db.Model):
+class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    item_title = db.Column(db.String, nullable=False)
+    title = db.Column(db.String, nullable=False)
     category = db.Column(db.String)
     item_img = db.Column(db.String, unique=True)
 
-    def __init__(self, item_title, category, item_img):
-        self.item_title = item_title
+    def __init__(self, title, category, item_img):
+        self.title = title
         self.category = category
         self.item_img = item_img
 
-class PictureSchema(ma.Schema):
+class ItemSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'item_title', 'category', 'item_img')
+        fields = ('id', 'title', 'category', 'item_img')
 
-picture_schema = PictureSchema()
-multi_picture_schema = PictureSchema(many=True)
+item_schema = ItemSchema()
+multi_item_schema = ItemSchema(many=True)
 
 # /////////////////// How to Add items to the Database \\\\\\\\\\\\\\\
 @app.route('/item/add', methods=["POST"])
@@ -39,34 +39,34 @@ def add_item():
         return jsonify('Error: Data must be sent as JSON')
 
     post_data = request.get_json()
-    item_title = post_data.get('item_title')
+    title = post_data.get('title')
     category = post_data.get('category')
     item_img = post_data.get('item_img')
 
-    if item_title == None:
+    if title == None:
         return jsonify("Error: You must provide an 'Item Title' key")
     if item_img == None:
         return jsonify("Error: You must provide a 'Picture' key")
 
-    new_record = Picture(item_title, category, item_img)
+    new_record = Item(title, category, item_img)
     db.session.add(new_record)
     db.session.commit()
 
-    return jsonify(picture_schema.dump(new_record))
+    return jsonify(item_schema.dump(new_record))
 
 # /////////////////// How to Get all items from the Database \\\\\\\\\\\\\\\
 
 @app.route('/item/get', methods=["GET"])
 def get_all_items():
-    all_records = db.session.query(Picture).all()
-    return jsonify(multi_picture_schema.dump(all_records))
+    all_records = db.session.query(Item).all()
+    return jsonify(multi_item_schema.dump(all_records))
 
 # /////////////////// How to Get items by ID from the Database \\\\\\\\\\\\\\\
 
 @app.route('/item/get/<id>', methods=["GET"])
 def get_item_id(id):
-    one_item = db.session.query(Picture).filter(Picture.id == id).first()
-    return jsonify(picture_schema.dump(one_item))
+    one_item = db.session.query(Item).filter(Item.id == id).first()
+    return jsonify(item_schema.dump(one_item))
 
 # /////////////////// How to Update Items to the Database \\\\\\\\\\\\\\\
 @app.route('/item/update/<id>', methods=["PUT"])
@@ -75,14 +75,14 @@ def update_item(id):
         return jsonify("Error: Datamust be sent as JSON")
 
     put_data = request.get_json()
-    item_title = put_data.get('item_title')
+    title = put_data.get('title')
     category = put_data.get('category')
     item_img = put_data.get('item_img')
 
-    item_to_update = db.session.query(Picture).filter(Picture.id == id).first()
+    item_to_update = db.session.query(Item).filter(Item.id == id).first()
 
-    if item_title != None:
-        item_to_update.item_title = item_title
+    if title != None:
+        item_to_update.title = title
     if category != None:
         item_to_update.category = category
     if item_img != None:
@@ -90,7 +90,7 @@ def update_item(id):
 
     db.session.commit()
 
-    return jsonify(picture_schema.dump(item_to_update))
+    return jsonify(item_schema.dump(item_to_update))
 
 # ///////////////////How to Add Multiple Items to he Database \\\\\\\\\\\\\\\\\\\
 
@@ -103,26 +103,26 @@ def add_multi_items():
 
     new_records = []
 
-    for picture in post_data:
-        item_title = picture.get('item_title')
-        category = picture.get('category')
-        item_img = picture.get('item_img')
+    for item in post_data:
+        title = item.get('title')
+        category = item.get('category')
+        item_img = item.get('item_img')
 
-        existing_item_check = db.session.query(Picture).filter(Picture.item_title == item_title).first()
+        existing_item_check = db.session.query(Item).filter(item.title == title).first()
         if existing_item_check is None:
-            new_record = Picture(item_title, category, item_img)
+            new_record = item(title, category, item_img)
             db.session.add(new_record)
             db.session.commit()
             new_records.append(new_record)
 
-        return jsonify(multi_picture_schema.dump(new_records))
+        return jsonify(multi_item_schema.dump(new_records))
 
 
 
     # /////////////////// How to Delete Items from the Database \\\\\\\\\\\\\\\
 @app.route('/item/delete/<id>', methods=["DELETE"])
 def item_to_delete(id):
-    delete_item = db.session.query(Picture).filter(Picture.id == id).first()
+    delete_item = db.session.query(Item).filter(Item.id == id).first()
     db.session.delete(delete_item)
     db.session.commit()
     return jsonify("Item was Deleted Successfully")
