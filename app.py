@@ -6,7 +6,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://wccaegsmvhvykt:c1d3281bddeede409f966c67423aa71dfa2169fab132a64d932740424beea023@ec2-44-214-132-149.compute-1.amazonaws.com:5432/dfmkn6n237qikb"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://zjuvgqpyalmowf:b157bd37154f15926e3a24873f6beb55861b3833fcd1dd5c66ae65ee8c206a2c@ec2-3-214-103-146.compute-1.amazonaws.com:5432/d6ldfc1178itlt"
 
 # /////// API Hosted lilnk name \\\\\\\\\\\\\\\\
 # https://jukebox-wood-crafts.herokuapp.com/(add wanted endpoint)
